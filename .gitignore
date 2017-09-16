@@ -121,3 +121,4 @@ build.log
 *.img
 *.img-zImage
 build
+arch/arm64/boot/dtb/
