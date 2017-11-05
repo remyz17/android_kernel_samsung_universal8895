@@ -34,6 +34,7 @@ CONFIG_FIX_EARLYCON_MEM=y
 CONFIG_PGTABLE_LEVELS=3
 CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
 CONFIG_IRQ_WORK=y
+CONFIG_BUILDTIME_EXTABLE_SORT=y
 
 #
 # General setup
@@ -324,6 +325,8 @@ CONFIG_ARCH_EXYNOS=y
 # CONFIG_SOC_EXYNOS8890 is not set
 CONFIG_SOC_EXYNOS8895=y
 # CONFIG_SOC_EMULATOR8895 is not set
+# CONFIG_MODEL_DREAMLTE is not set
+CONFIG_MODEL_DREAM2LTE=y
 CONFIG_ARCH_EXYNOS8=y
 # CONFIG_ZONE_MOVABLE is not set
 
@@ -488,9 +491,8 @@ CONFIG_SETEND_EMULATION=y
 # Boot options
 #
 CONFIG_CMDLINE=""
-CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE=y
-CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES="exynos8895-dream2lte_eur_open_00 exynos8895-dream2lte_eur_open_01 exynos8895-dream2lte_eur_open_02 exynos8895-dream2lte_eur_open_03 exynos8895-dream2lte_eur_open_04 exynos8895-dream2lte_eur_open_05 exynos8895-dream2lte_eur_open_06 exynos8895-dream2lte_eur_open_07 exynos8895-dream2lte_eur_open_08 exynos8895-dream2lte_eur_open_09 exynos8895-dream2lte_eur_open_10"
-CONFIG_ARM64_APPENDED_DTB=y
+# CONFIG_EFI is not set
+# CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE is not set
 
 #
 # Userspace binary formats
