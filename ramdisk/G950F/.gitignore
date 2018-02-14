@@ -1,0 +1,8 @@
+bin
+split_img
+authors.txt
+boot.img
+cleanup.sh
+repackimg.sh
+unpackimg.sh
+image-new.img
