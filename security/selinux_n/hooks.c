@@ -181,7 +181,7 @@ static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
 
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
 // [ SEC_SELINUX_PORTING_COMMON
-#if defined(CONFIG_ALWAYS_ENFORCE) && defined(CONFIG_RKP_KDP)
+#if defined(CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE) && defined(CONFIG_RKP_KDP)
 RKP_RO_AREA int selinux_enforcing;
 #else
 int selinux_enforcing;
@@ -193,8 +193,10 @@ static int __init enforcing_setup(char *str)
 	unsigned long enforcing;
 	if (!kstrtoul(str, 0, &enforcing))
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#if defined(CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE)
 		selinux_enforcing = 1;
+#elif defined(CONFIG_SECURITY_SELINUX_NEVER_ENFORCE)
+		selinux_enforcing = 0;
 #else
 		selinux_enforcing = enforcing ? 1 : 0;
 #endif
@@ -212,7 +214,7 @@ static int __init selinux_enabled_setup(char *str)
 	unsigned long enabled;
 	if (!kstrtoul(str, 0, &enabled))
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 		selinux_enabled = 1;
 #else
 		selinux_enabled = enabled ? 1 : 0;
@@ -4701,6 +4703,8 @@ static int sock_has_perm(struct task_struct *task, struct sock *sk, u32 perms)
 	struct lsm_network_audit net = {0,};
 	u32 tsid = task_sid(task);
 
+	if (!sksec)
+		return -EFAULT;
 	if (sksec->sid == SECINITSID_KERNEL)
 		return 0;
 
@@ -5681,7 +5685,7 @@ static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 			       sk->sk_protocol, nlh->nlmsg_type,
 			       secclass_map[sksec->sclass - 1].name);
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 			if (security_get_allow_unknown())
 #else
 			if (!selinux_enforcing || security_get_allow_unknown())
@@ -6663,7 +6667,7 @@ static int selinux_setprocattr(struct task_struct *p,
 		return error;
 
 	/* Obtain a SID for the context, if one was specified. */
-	if (size && str[1] && str[1] != '\n') {
+	if (size && str[0] && str[0] != '\n') {
 		if (str[size-1] == '\n') {
 			str[size-1] = 0;
 			size--;
@@ -7155,7 +7159,7 @@ static __init int selinux_init(void)
 {
 	if (!security_module_enable("selinux")) {
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 		selinux_enabled = 1;
 #else
 		selinux_enabled = 0;
@@ -7189,7 +7193,7 @@ static __init int selinux_init(void)
 	if (avc_add_callback(selinux_netcache_avc_callback, AVC_CALLBACK_RESET))
 		panic("SELinux: Unable to register AVC netcache callback\n");
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 		selinux_enforcing = 1;
 #endif
 // ] SEC_SELINUX_PORTING_COMMON
@@ -7260,7 +7264,7 @@ static int __init selinux_nf_ip_init(void)
 {
 	int err;
 // [ SEC_SELINUX_PORTING_COMMON
-#ifdef CONFIG_ALWAYS_ENFORCE
+#ifdef CONFIG_SECURITY_SELINUX_ALWAYS_ENFORCE
 		selinux_enabled = 1;
 #endif
 // ] SEC_SELINUX_PORTING_COMMON
